@@ -1,0 +1,10 @@
+0,Donald Trump
+1,Joe Biden
+2,Conan O'brien
+3,Ellen Degeneres
+4,Kim Kardashian
+5,Lebron James
+6,Lady Gaga
+7,Cristiano Ronaldo
+8,Jimmy kimmel
+9,Arnold schwarzenegger
