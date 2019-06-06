@@ -31,7 +31,7 @@ class ZivsVisualizer:
         plt.savefig("images/heatmap" + str(i) + ".png", type='png')
 
     @staticmethod
-    def pair_plot(data, features, i):
+    def pair_plot(data, features):
         '''
         Plot a figure with a pair of each feature with all the other features.
         :param data: the data
@@ -40,7 +40,7 @@ class ZivsVisualizer:
         '''
         sns.set()
         sns.pairplot(data[features], size=2.5)
-        plt.savefig('images/pair_plot' + str(i) + '.png', format='png')
+        plt.savefig('images/pair_plot.png', format='png')
 
     @staticmethod
     def print_and_return_cols_with_null(data, amount_printed=20):
