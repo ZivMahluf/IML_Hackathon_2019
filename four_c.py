@@ -25,10 +25,10 @@ import nltk
 
 
 def delete_stop_words_create_stems(data_tweet):
-    nltk.download('stopwords')
+    nltk.download('stopwords', quiet=True)
     stop_words = set(stopwords.words('english'))
     porter = PorterStemmer()
-    new_data_tweet = []
+    # new_data_tweet = []
     # for tweet in data_tweet:
     #     new_tweet = []
     #     for word in tweet:
