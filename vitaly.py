@@ -10,10 +10,12 @@ def process_sentence(tweets):
     close_pattern = re.compile(r"[\"|\']\]$")
     link_pattern = re.compile(r"http[s]?://[A-Za-z0-9\.\/]*\s*")
     rt_pattern = re.compile(r"^RT *@([\w]*):")
+    spaces_pattern = re.compile(r"\s+")
+    separators_pattern = re.compile(r"[\.,]")
 
     result = pd.DataFrame()
-
-    str_tweets = tweets.apply(lambda tweet: str(tweet))
+    result['num_of_non_ascii_characters'] = tweets.apply(lambda tweet: sum(127 < c for c in tweet))
+    str_tweets = tweets.apply(lambda tweet: str(''.join([chr(c) for c in tweet if c <= 127])))
     filtered = str_tweets.apply(lambda tweet: tweet[2:-1])
     filtered = filtered.apply(lambda tweet: open_pattern.sub(r'', tweet))
     filtered = filtered.apply(lambda tweet: close_pattern.sub(r'', tweet))
@@ -26,10 +28,14 @@ def process_sentence(tweets):
     result['num_hashes'] = filtered.apply(lambda tweet: tweet.count('#'))
     result['num_exmarks'] = filtered.apply(lambda tweet: tweet.count('!'))
     result['num_qmarks'] = filtered.apply(lambda tweet: tweet.count('?'))
-    filtered = filtered.apply(lambda tweet: re.sub(r"\s+", r' ', tweet))
-    filtered = filtered.apply(lambda tweet: re.sub(r"[\.,]", r'', tweet))
+    filtered = filtered.apply(lambda tweet: spaces_pattern.sub(r' ', tweet))
+    filtered = filtered.apply(lambda tweet: separators_pattern.sub(r'', tweet))
     filtered = filtered.apply(lambda tweet: tweet.encode('ascii', 'ignore').decode('ascii'))
     result['words'] = filtered.apply(lambda tweet: tweet.split())
+    result['uppercase_words_ratio'] = result['words'].apply(lambda word_lst: sum(list(map(str.isupper, word_lst))))
+    result['lowercase_words_ratio'] = result['words'].apply(lambda word_lst: sum(list(map(str.islower, word_lst))))
+    result['words_per_tweet'] = result['words'].apply(lambda word_lst: len(word_lst))
+
     return result
 
 
