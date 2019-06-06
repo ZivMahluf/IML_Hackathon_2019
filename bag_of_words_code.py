@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import zero_one_loss
 
 if __name__ == '__main__':
     data = pd.DataFrame()
@@ -21,12 +22,12 @@ if __name__ == '__main__':
     labels = pd.Series(data['user'])
     data = data.drop(columns=['user'])
 
+    data['tweet'] = data['tweet'].fillna('').astype(bytes)
+    labels = labels.fillna(-1).astype(int)
+
     # split to test
     X_train, X_test, y_train, y_test = \
         train_test_split(data, labels, test_size=0.33, random_state=42)
-
-    X_train = X_train.fillna('0').astype(bytes)
-    y_train = y_train.fillna(0).astype(float)
 
     text_clf = Pipeline([
         ('vect', CountVectorizer()),
@@ -36,4 +37,4 @@ if __name__ == '__main__':
 
     text_clf.fit(X_train['tweet'], y_train)
     predicted = text_clf.predict(X_test['tweet'])
-    print(np.mean(predicted == y_test))
+    print(np.mean(predicted == y_test))  # 0.748574
