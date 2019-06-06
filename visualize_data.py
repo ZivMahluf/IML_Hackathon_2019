@@ -7,13 +7,13 @@ import seaborn as sns
 class ZivsVisualizer:
 
     @staticmethod
-    def save_heatmap(data, i):
+    def save_heatmap(data):
         '''
         Save the heatmap. data is assumed to have labels as a column in it.
         :param data:
         :return:
         '''
-        _, ax = plt.subplots(figsize=(14, 12))
+        _, ax = plt.subplots(figsize=(18, 16))
         colormap = sns.diverging_palette(220, 10, as_cmap=True)
 
         _ = sns.heatmap(
@@ -24,11 +24,11 @@ class ZivsVisualizer:
             ax=ax,
             annot=True,
             linewidths=0.1, vmax=1.0, linecolor='white',
-            annot_kws={'fontsize': 12}
+            annot_kws={'fontsize': 10}
         )
 
         plt.title('Pearson Correlation of Features', y=1.05, size=15)
-        plt.savefig("images/heatmap" + str(i) + ".png", type='png')
+        plt.savefig("images/heatmap.png", type='png')
 
     @staticmethod
     def pair_plot(data, features):
