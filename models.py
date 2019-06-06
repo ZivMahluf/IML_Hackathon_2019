@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 def random_forest(X_train, X_test, y_train, y_test):
@@ -48,15 +49,31 @@ def adaboost(X_train, X_test, y_train, y_test):
 
 if __name__ == '__main__':
     data = pd.DataFrame()
-    for filename in os.listdir('tweets_data'):
-        if filename.endswith('.csv'):
-            data = data.append(pd.read_csv('tweets_data/' + filename))
+    # for filename in os.listdir('tweets_data'):
+    #     if filename.endswith('.csv'):
+    #         data = data.append(pd.read_csv('tweets_data/' + filename))
+    data = pd.read_csv('sets/data_with_user.csv')
     data['tweet'] = data['tweet'].apply(
         lambda w: w.encode(encoding='utf-8', errors='ignore'))
-    data_features = vitaly.process_sentence(data['tweet'])
-    del data_features['words']
+    del data['words']
+    del data['tweet']
+    X = data
+    y = data['user']
+    del X['user']
     X_train, X_test, y_train, y_test = \
-        train_test_split(data_features, data['user'], test_size=0.33,
-                         random_state=42)
-    adaboost(X_train, X_test, y_train, y_test)
+              train_test_split(X, y, test_size=0.33, random_state=42)
+    # data_features = vitaly.process_sentence(data['tweet'])
+    # vectorizer = CountVectorizer()
+    # combined_tweets = ''
+    # for tweet in data_features['words']:
+    #     for word in tweet:
+    #         combined_tweets = combined_tweets + ' ' + word
+    # words_features = vectorizer.fit_transform(combined_tweets)
+    # words_features = vectorizer.fit_transform(data['tweet'])
+
+    # del data_features['words']
+    # X_train, X_test, y_train, y_test = \
+    #     train_test_split(data_features, data['user'], test_size=0.33,
+    #                      random_state=42)
+    svm(X_train, X_test, y_train, y_test)
 
