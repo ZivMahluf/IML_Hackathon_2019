@@ -13,10 +13,12 @@ if __name__ == '__main__':
         for filename in os.listdir('tweets_data'):
             if filename.endswith('.csv'):
                 file_data = pd.read_csv('tweets_data/' + filename)
-                file_data['user'].fillna(file_data['user'].mode(dropna=True))  # use only for traindata
+                file_data['user'].fillna(
+                    file_data['user'].mode(dropna=True))  # use only for traindata
                 file_data['tweet'] = file_data['tweet'].dropna()
                 data = data.append(file_data)
     else:
+        pass  # handle test (its given as a list of tweets/strings
 
     data['tweet'] = data['tweet'].apply(lambda w: w.encode(encoding='utf-8', errors='ignore'))
 
@@ -27,7 +29,4 @@ if __name__ == '__main__':
     #  completing - in train - correct label by given file. in train - delete if tweet is nan/null,
     #  in test - guess.
 
-    # code for train data
 
-
-    # code for test data
