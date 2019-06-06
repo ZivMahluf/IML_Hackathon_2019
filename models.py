@@ -31,11 +31,13 @@ def svm(X_train, X_test, y_train, y_test):
     print(np.mean(predicted == y_test))
 
 
-def knn(X_train, X_test, y_train, y_test):
+def knn(X_train, X_test, y_train, y_test, X_valid, y_valid):
     neigh = KNeighborsClassifier(n_neighbors=20)
     neigh.fit(X_train, y_train)
     predicted = neigh.predict(X_test)
-    print(np.mean(predicted == y_test))
+    print("test err:" +str(np.mean(predicted == y_test)))
+    predicted_v = neigh.predict(X_valid)
+    print("valid err:" + str(np.mean(predicted_v == y_valid)))
 
 
 def adaboost(X_train, X_test, y_train, y_test):
@@ -60,8 +62,11 @@ if __name__ == '__main__':
     X = data
     y = data['user']
     del X['user']
-    X_train, X_test, y_train, y_test = \
+    X_train, X_vt, y_train, y_vt = \
               train_test_split(X, y, test_size=0.4, random_state=42)
+
+    X_valid, X_test, y_valid, y_test = \
+        train_test_split(X_vt, y_vt, test_size=0.5, random_state=42)
     # data_features = vitaly.process_sentence(data['tweet'])
     # vectorizer = CountVectorizer()
     # combined_tweets = ''
@@ -75,7 +80,7 @@ if __name__ == '__main__':
     # X_train, X_test, y_train, y_test = \
     #     train_test_split(data_features, data['user'], test_size=0.33,
     #                      random_state=42)
-    knn(X_train, X_test, y_train, y_test)
+    knn(X_train, X_test, y_train, y_test, X_valid, y_valid)
 
-    from ggplot import
+
 
