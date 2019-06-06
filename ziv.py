@@ -130,17 +130,25 @@ if __name__ == '__main__':
     # data.to_csv('sets/data_after_set_features.csv')
     # print()
 
-    data = pd.read_csv('sets/data_after_set_features.csv')
-    data = data.fillna(0)
-    for w in data.columns:
-        if w.find('set') != -1:
-            data[w] = data[w].fillna(0).astype(int)
-    data.to_csv('sets/new_data_thursday_night.csv')
+    # # replace the empty values with 0
+    # data = pd.read_csv('sets/data_after_set_features.csv')
+    # data = data.fillna(0)
+    # for w in data.columns:
+    #     if w.find('set') != -1:
+    #         data[w] = data[w].fillna(0).astype(int)
+    # data.to_csv('sets/new_data_thursday_night.csv')
 
-    # import featuretools as ft
-    # es = ft.EntitySet()
-    # ft.dfs()
+    # delete the user columns and replace them by labels
+    data = pd.read_csv('sets/new_data_thursday_night.csv')
+    labels = np.zeros(data.shape[0], dtype=int)
+    for k in range(10):
+        w = 'user_' + str(k)
+        labels += (k * data[w])
+        data = data.drop(columns=[w])
 
-    # zv.save_heatmap(data, 42)
-    # zv.pair_plot(data, data.columns)
-    # print()
+    unnamed_cols = [col for col in data.columns if col.find('Unnamed') != -1]
+    data = data.drop(columns=unnamed_cols)
+    data['user'] = labels
+    data.to_csv('sets/data_with_user.csv')
+
+    print()
