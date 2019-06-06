@@ -21,18 +21,23 @@ from sklearn.metrics import mean_squared_error
 from sklearn import linear_model
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+import nltk
 
 
 def delete_stop_words_create_stems(data_tweet):
+    nltk.download('stopwords')
     stop_words = set(stopwords.words('english'))
     porter = PorterStemmer()
     new_data_tweet = []
-    for tweet in data_tweet:
-        new_tweet = []
-        for word in tweet:
-            if word not in stop_words:
-                new_tweet.append(porter.stem(word))
-        new_data_tweet.append(new_tweet)
-    return new_data_tweet
-
+    # for tweet in data_tweet:
+    #     new_tweet = []
+    #     for word in tweet:
+    #         if word not in stop_words:
+    #             new_tweet.append(porter.stem(word))
+    #     new_data_tweet.append(new_tweet)
+    test = pd.Series(data_tweet)
+    test = test.apply(lambda x: [porter.stem(word) for word in x if word not
+                                 in stop_words])
+    # return new_data_tweet
+    return test
 

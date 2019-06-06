@@ -2,12 +2,13 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import regex as re
-from os import listdir
+import os
 from os.path import isfile, join
 
 
 #  break a tweet to its base features as selected beforehand
 def process_sentence(tweet):
+    tweet = str(tweet)
     st = re.sub(r"^\[[\"|\']", r'', tweet)
     st = re.sub(r"[\"|\']\]$", r'', st)
     has_link = 1 if re.search(r"http[s]?://[A-Za-z0-9\.\/]*\s*", st) is not None else 0
@@ -22,53 +23,55 @@ def process_sentence(tweet):
     st = re.sub(r"\s+", r' ', st)
     st = re.sub(r"[\.,]", r'', st)
     st = st.encode('ascii', 'ignore').decode('ascii')
-    print(st.split())
+    # print(st.split())
     return [is_rt, has_link, has_dots, has_exc, has_tags, has_hashs, has_qmark, st.split()]
-    # print(tweet, end='\n\n')
-    # tweet_structure = re.compile('\[[\'|\"](RT *@\w*:)? *([#@]?\w[\w\"\',]*)? *(http://[a-z\.A-Z0-9/]*)?.*[\'|\"]\]')
-    # m = tweet_structure.match(tweet)
-    # if m is not None:
-    #     print(m.group(0))
-    #     print(m.group(1))
-    #     print(m.group(2))
-    #     print(m.group(3))
-    # else:
-    #     print(tweet)
-    # print()
-
-    #  finding out if it's a retweet
-    # rt = re.search('RT @(\w*):', tweet)
-    # if rt is not None:
-    #     #  if so - printing whose tweet is retweeted
-    #     print(rt.group(1))
-    # #  decomposing the tweet to its words
-    # words_pattern = re.compile('(\w[\w\']*)')
-    # words = words_pattern.findall(tweet)
-    # print(words)
-    # print()
 
 
 if __name__ == '__main__':
-    features = ['tagged',
-                'average number of words',
-                'number of dots',
-                'number of ,',
-                'hashtags used',
-                'retweet or not',
-                'number of capitalized words',
-                'number of !',
-                'has link',
-                'contains some keyword (Iraq, Afghanistan...)',
-                'contains flags',
-                'contains ...']
-    listed = [list(), list()]
-    path = 'tweets_data/'
-    for file in [f for f in listdir(path) if isfile(join(path, f))]:
-        if file[-11:] == '_tweets.csv':
-            user_tweets = pd.read_csv(join(path, file), sep=',')
-            listed[0] += list(user_tweets['user'].values)
-            listed[1] += list(user_tweets['tweet'].values)
-    total_data = pd.DataFrame(list(zip(listed[0], listed[1])), columns=['user', 'tweet'])
-    # total_data['tweet'] = total_data['tweet'].apply(lambda w: w.encode(encoding='utf-8', errors='ignore'))
-    for i in range(0, 30000, 3000):
-        process_sentence(total_data['tweet'][i])
+    data = pd.DataFrame()
+    for filename in os.listdir('tweets_data'):
+        if filename.endswith('.csv'):
+            data = data.append(pd.read_csv('tweets_data/' + filename))
+    data['tweet'] = data['tweet'].apply(
+        lambda w: w.encode(encoding='utf-8', errors='ignore'))
+
+    # minimal preprocessing on the strings
+    data['tweet'] = data['tweet'].apply(
+        lambda w: w[2:len(w) - 2])  # remove [' and ']
+
+    vitaly = data['tweet'].apply(lambda x: np.array(
+        process_sentence(x)))
+    feature_names = ['is_rt', 'has_link', 'has_dots', 'has_exc', 'has_tags', 'has_hashs', \
+    'has_qmark']
+    for i in range(len(vitaly[0]) - 1):
+        data[feature_names[i]] = vitaly[i]
+    from four_c import delete_stop_words_create_stems
+    mor = vitaly.apply(lambda x: x[-1])
+    ido = delete_stop_words_create_stems(mor)
+    print()
+
+    #
+    # features = ['tagged',
+    #             'average number of words',
+    #             'number of dots',
+    #             'number of ,',
+    #             'hashtags used',
+    #             'retweet or not',
+    #             'number of capitalized words',
+    #             'number of !',
+    #             'has link',
+    #             'contains some keyword (Iraq, Afghanistan...)',
+    #             'contains flags',
+    #             'contains ...']
+    # listed = [list(), list()]
+    # path = 'tweets_data/'
+    # for file in [f for f in listdir(path) if isfile(join(path, f))]:
+    #     if file[-11:] == '_tweets.csv':
+    #         user_tweets = pd.read_csv(join(path, file), sep=',')
+    #         listed[0] += list(user_tweets['user'].values)
+    #         listed[1] += list(user_tweets['tweet'].values)
+    # total_data = pd.DataFrame(list(zip(listed[0], listed[1])), columns=['user', 'tweet'])
+    # # total_data['tweet'] = total_data['tweet'].apply(lambda w: w.encode(encoding='utf-8', errors='ignore'))
+    #
+    # for i in range(0, 30000, 3000):
+    #     words = process_sentence(total_data['tweet'][i])[-1]
