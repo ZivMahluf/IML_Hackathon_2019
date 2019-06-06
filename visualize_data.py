@@ -7,7 +7,7 @@ import seaborn as sns
 class ZivsVisualizer:
 
     @staticmethod
-    def save_heatmap(data):
+    def save_heatmap(data, i):
         '''
         Save the heatmap. data is assumed to have labels as a column in it.
         :param data:
@@ -28,10 +28,10 @@ class ZivsVisualizer:
         )
 
         plt.title('Pearson Correlation of Features', y=1.05, size=15)
-        plt.savefig("images/heatmap.png", type='png')
+        plt.savefig("images/heatmap" + str(i) + ".png", type='png')
 
     @staticmethod
-    def pair_plot(data, features):
+    def pair_plot(data, features, i):
         '''
         Plot a figure with a pair of each feature with all the other features.
         :param data: the data
@@ -40,7 +40,7 @@ class ZivsVisualizer:
         '''
         sns.set()
         sns.pairplot(data[features], size=2.5)
-        plt.savefig('images/pair_plot.png', format='png')
+        plt.savefig('images/pair_plot' + str(i) + '.png', format='png')
 
     @staticmethod
     def print_and_return_cols_with_null(data, amount_printed=20):

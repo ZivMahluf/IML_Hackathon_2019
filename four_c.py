@@ -35,9 +35,9 @@ def delete_stop_words_create_stems(data_tweet):
     #         if word not in stop_words:
     #             new_tweet.append(porter.stem(word))
     #     new_data_tweet.append(new_tweet)
-    test = pd.Series(data_tweet)
-    test = test.apply(lambda x: [porter.stem(word) for word in x if word not
+    test = data_tweet.apply(lambda x: [porter.stem(word) for word in x if word not
                                  in stop_words])
+    # test = data_tweet.applymap(lambda x: porter.stem(x) if x not in stop_words else np.nan)
     # return new_data_tweet
     return test
 
