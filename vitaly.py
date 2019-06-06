@@ -10,12 +10,20 @@ from os.path import isfile, join
 def process_sentence(tweet):
     st = re.sub(r"^\[[\"|\']", r'', tweet)
     st = re.sub(r"[\"|\']\]$", r'', st)
+    has_link = 1 if re.search(r"http[s]?://[A-Za-z0-9\.\/]*\s*", st) is not None else 0
     st = re.sub(r"http[s]?://[A-Za-z0-9\.\/]*\s*", r"", st)
+    is_rt = 1 if re.search(r"^RT *@[\w]*:", st) is not None else 0
+    st = re.sub(r"^RT *@[\w]*:", r'', st)
+    has_dots = 1 if 0 < st.count('.') else 0
+    has_tags = 1 if 0 < st.count('@') else 0
+    has_hashs = 1 if 0 < st.count('#') else 0
+    has_exc = 1 if 0 < st.count('!') else 0
+    has_qmark = 1 if 0 < st.count('?') else 0
     st = re.sub(r"\s+", r' ', st)
-    st = re.sub(r"[\.,\"]", r'', st)
+    st = re.sub(r"[\.,]", r'', st)
     st = st.encode('ascii', 'ignore').decode('ascii')
     print(st.split())
-    return st.split()
+    return [is_rt, has_link, has_dots, has_exc, has_tags, has_hashs, has_qmark, st.split()]
     # print(tweet, end='\n\n')
     # tweet_structure = re.compile('\[[\'|\"](RT *@\w*:)? *([#@]?\w[\w\"\',]*)? *(http://[a-z\.A-Z0-9/]*)?.*[\'|\"]\]')
     # m = tweet_structure.match(tweet)
