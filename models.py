@@ -61,7 +61,7 @@ if __name__ == '__main__':
     y = data['user']
     del X['user']
     X_train, X_test, y_train, y_test = \
-              train_test_split(X, y, test_size=0.33, random_state=42)
+              train_test_split(X, y, test_size=0.4, random_state=42)
     # data_features = vitaly.process_sentence(data['tweet'])
     # vectorizer = CountVectorizer()
     # combined_tweets = ''
@@ -75,5 +75,7 @@ if __name__ == '__main__':
     # X_train, X_test, y_train, y_test = \
     #     train_test_split(data_features, data['user'], test_size=0.33,
     #                      random_state=42)
-    svm(X_train, X_test, y_train, y_test)
+    knn(X_train, X_test, y_train, y_test)
+
+    from ggplot import
 
