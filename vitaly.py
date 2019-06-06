@@ -11,7 +11,7 @@ def process_sentence(tweets):
     link_pattern = re.compile(r"http[s]?://[A-Za-z0-9\.\/]*\s*")
     rt_pattern = re.compile(r"RT *@([\w]*):")
     spaces_pattern = re.compile(r"\s+")
-    separators_pattern = re.compile(r"[\.,]")
+    separators_pattern = re.compile(r"[\.,\"]")
 
     result = pd.DataFrame()
     result['num_of_non_ascii_characters'] = tweets.apply(lambda tweet: sum(127 < c for c in tweet))
