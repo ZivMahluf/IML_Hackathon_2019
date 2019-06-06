@@ -9,7 +9,7 @@ def process_sentence(tweets):
     open_pattern = re.compile(r"^\[[\"|\']")
     close_pattern = re.compile(r"[\"|\']\]$")
     link_pattern = re.compile(r"http[s]?://[A-Za-z0-9\.\/]*\s*")
-    rt_pattern = re.compile(r"^RT *@([\w]*):")
+    rt_pattern = re.compile(r"RT *@([\w]*):")
     spaces_pattern = re.compile(r"\s+")
     separators_pattern = re.compile(r"[\.,]")
 
