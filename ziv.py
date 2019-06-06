@@ -69,27 +69,27 @@ Sets_mapping = [Trump, Joe_Biden, Conan_Obrian, Ellen_Degeneres, Kim_Kardeshian,
 
 TYPE_OF_DATA = 'train'
 if __name__ == '__main__':
-    data = pd.DataFrame()
-    if TYPE_OF_DATA == 'train':
-        for filename in os.listdir('tweets_data'):
-            if filename.endswith('.csv'):
-                file_data = pd.read_csv('tweets_data/' + filename)
-                file_data['user'].fillna(
-                    file_data['user'].mode(dropna=True))  # use only for traindata
-                file_data['tweet'].dropna(inplace=True)
-                data = data.append(file_data, ignore_index=True)
-    else:
-        pass  # handle test (its given as a list of tweets/strings
-
-    data['tweet'] = data['tweet'].apply(lambda w: w.encode(encoding='utf-8', errors='ignore'))
-    data['tweet'] = data['tweet'].apply(lambda w: w[2:len(w) - 2])  # remove [' and ']
-
-    vitaly = process_sentence(data['tweet'])
-    data = pd.concat([data, vitaly], axis=1)
-    labels = pd.Series(data['user'])
-    data = pd.get_dummies(data, columns=['user'])  # binary features for the user
-    # data = data.drop(columns=['words', 'tweet'])
-    # data['common_words'] = delete_stop_words_create_stems(data['words'])
+    # data = pd.DataFrame()
+    # if TYPE_OF_DATA == 'train':
+    #     for filename in os.listdir('tweets_data'):
+    #         if filename.endswith('.csv'):
+    #             file_data = pd.read_csv('tweets_data/' + filename)
+    #             file_data['user'].fillna(
+    #                 file_data['user'].mode(dropna=True))  # use only for traindata
+    #             file_data['tweet'].dropna(inplace=True)
+    #             data = data.append(file_data, ignore_index=True)
+    # else:
+    #     pass  # handle test (its given as a list of tweets/strings
+    #
+    # data['tweet'] = data['tweet'].apply(lambda w: w.encode(encoding='utf-8', errors='ignore'))
+    # data['tweet'] = data['tweet'].apply(lambda w: w[2:len(w) - 2])  # remove [' and ']
+    #
+    # vitaly = process_sentence(data['tweet'])
+    # data = pd.concat([data, vitaly], axis=1)
+    # labels = pd.Series(data['user'])
+    # data = pd.get_dummies(data, columns=['user'])  # binary features for the user
+    # # data = data.drop(columns=['words', 'tweet'])
+    # # data['common_words'] = delete_stop_words_create_stems(data['words'])
 
     # TODO: replaced by manual sets
     # nltk.download('stopwords', quiet=True)
@@ -114,22 +114,28 @@ if __name__ == '__main__':
     #     f.write(str(user_common_word_set[j]))
     #     f.close()
 
-    # add column to model based on set of words
-    set_features = pd.DataFrame(columns=['set_' + str(k) + '_score' for k in range(10)])
-    print("shape of data " + str(data.shape))
-    for word_list_index, word_list in data['words'].iteritems():
-        print(word_list_index)
-        score = defaultdict(float)
-        for word in word_list:
-            for g in range(10):
-                if word in Sets_mapping[g]:
-                    score[g] += 1
-        set_features = set_features.append(score, ignore_index=True)
+    # # add column to model based on set of words
+    # set_features = pd.DataFrame(columns=['set_' + str(k) + '_score' for k in range(10)])
+    # print("shape of data " + str(data.shape))
+    # for word_list_index, word_list in data['words'].iteritems():
+    #     print(word_list_index)
+    #     score = defaultdict(float)
+    #     for word in word_list:
+    #         for g in range(10):
+    #             if word in Sets_mapping[g]:
+    #                 score[g] += 1
+    #     set_features = set_features.append(score, ignore_index=True)
+    #
+    # data = pd.concat([data, set_features], axis=1)
+    # data.to_csv('sets/data_after_set_features.csv')
+    # print()
 
-    data = pd.concat([data, set_features], axis=1)
-    data.to_csv('sets/data_after_set_features.csv')
-    print()
-
+    data = pd.read_csv('sets/data_after_set_features.csv')
+    data = data.fillna(0)
+    for w in data.columns:
+        if w.find('set') != -1:
+            data[w] = data[w].fillna(0).astype(int)
+    data.to_csv('sets/new_data_thursday_night.csv')
 
     # import featuretools as ft
     # es = ft.EntitySet()
