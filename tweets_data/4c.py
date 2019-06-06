@@ -23,7 +23,6 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
 
-
 def delete_stop_words_create_stems(data_tweet):
     stop_words = set(stopwords.words('english'))
     porter = PorterStemmer()
